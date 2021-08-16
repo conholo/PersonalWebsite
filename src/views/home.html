@@ -1,0 +1,30 @@
+{% set title = 'Connor Wendt' %}
+
+{% extends 'layout.html' %}
+
+{% block style %}
+<link type="text/css" rel="stylesheet" href="/css/home.css">
+{% endblock %}
+
+
+{% block content %}
+<div>
+    <div class="header-main">
+        <div class="container hero">
+            <div class="row">
+                <div class="col-12 col-lg-6 col-xl-5 offset-xl-1">
+                    <h1>Connor Wendt</h1>
+                    <p> CS, Game Dev, Engine Design<br></p>
+                    <a href="/projects/" class="btn btn-light btn-lg action-button" type="button">Projects<i class="fa fa-long-arrow-right ml-2"></i></a>
+                </div>
+            </div>
+            <div id="home-demo-container">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+    <script src="/js/home-visualization.js" type="module"> </script>
+{% endblock %}
