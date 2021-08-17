@@ -1,10 +1,21 @@
 export class HeapItem {
 
-    constructor(value) {
-        this.value = value
+    constructor(heapItemContainer) {
         this.heapIndex = 0;
         this.gCost = 0;
         this.hCost = 0;
+        this.fCost = this.gCost + this.hCost;
+        this.parentItem = null;
+        this.heapItemContainer = heapItemContainer;
+    }
+
+    setGCost(gCost) {
+        this.gCost = gCost;
+        this.fCost = this.gCost + this.hCost;
+    }
+
+    setHCost(hCost) {
+        this.hCost = hCost;
         this.fCost = this.gCost + this.hCost;
     }
 
@@ -13,10 +24,10 @@ export class HeapItem {
         Priority is descending.  1 if greater priority, 0 if equivalent priority and -1 if lower priority.
          */
 
-        if(this.value === other.value)
-            return 0;
+        if(this.fCost === other.fCost)
+            return this.hCost < other.hCost ? 1 : -1;
 
-        return this.value < other.value ? 1 : -1;
+        return this.fCost < other.fCost ? 1 : -1;
     }
 }
 
@@ -31,6 +42,10 @@ export class Heap {
 
     isEmpty() {
         return this.itemCount === 0;
+    }
+
+    update(item) {
+        this.sortUp(item);
     }
 
     add(item) {
@@ -49,6 +64,10 @@ export class Heap {
         this.items[0].heapIndex = 0;
         this.sortDown(this.items[0]);
         return first;
+    }
+
+    contains(item) {
+        return this.items[item.heapIndex] === item;
     }
 
     sortUp(item) {
@@ -89,7 +108,7 @@ export class Heap {
             const swapItem = this.items[swapIndex];
 
             // Both children had a lower priority, nothing to swap.
-            if(swapItem.compareTo(item) <= 0)
+            if(swapItem.compareTo(item) < 0)
                 break;
 
             this.swap(item, swapItem);

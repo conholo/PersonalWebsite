@@ -139,16 +139,6 @@ class DemoScene {
         this.initialize(container);
     }
 
-    /*
-         6----7
-        /|   /|
-       2----3 |
-       | |  | |
-       | 4--|-5
-       |/   |/
-       0----1
-    */
-
     initialize(container){
         this.renderer = new THREE.WebGLRenderer( { antialias: true} );
         this.renderer.shadowMap.enabled = true;

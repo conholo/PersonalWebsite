@@ -93,13 +93,39 @@ export class GridDisplay {
         return gridItem;
     }
 
+    displayPath(path, intervalSeconds) {
+
+        let currentPathIndex = 1;
+
+        const display = setInterval(() => {
+
+            if(currentPathIndex >= path.length - 1)
+                clearInterval(display);
+            else {
+
+                const currentCell = path[currentPathIndex];
+
+
+                currentCell.toggleIsPathCell();
+
+                this.fillCells();
+
+                currentPathIndex++;
+            }
+        }, intervalSeconds * 1000)
+    }
+
+
     resetAllCells() {
-        this.grid.gridItems.forEach(t => { t.drawAsNeighbor = false; t.isObstacle = false;})
+        this.grid.gridItems.forEach(t => { t.drawAsNeighbor = false; t.isObstacle = false; t.isPathCell = false;})
 
         if(this.currentSourceCell !== null)
             this.currentSourceCell.toggleSourceCell();
         if(this.currentDestinationCell !== null)
             this.currentDestinationCell.toggleDestinationCell();
+
+        this.currentSourceCell = null;
+        this.currentDestinationCell = null;
 
         this.fillCells();
     }
@@ -183,15 +209,43 @@ export class GridDisplay {
             const cellBottomLeftX = this.canvasBottomLeftX + column * this.cellSize;
             const cellBottomLeftY = this.canvasBottomLeftY - row * this.cellSize;
 
-            let color = gridItem.drawAsNeighbor ? 'green' : gridItem.isObstacle ? 'red' : 'black';
+            let color = 'white';
+            let writePathText = false;
 
-            color = !gridItem.isSource && !gridItem.isDestination ? color : gridItem.isSource ? 'cyan' : 'magenta';
+            if(gridItem.isPathCell) {
+                color = 'yellow';
+                writePathText = true;
+            }
+            else {
+                color = gridItem.drawAsNeighbor ? 'green' : gridItem.isObstacle ? 'red' : 'black';
 
-            this.fillCell(cellBottomLeftX, cellBottomLeftY, row, column, color);
+                color = !gridItem.isSource && !gridItem.isDestination ? color : gridItem.isSource ? 'cyan' : 'magenta';
+            }
+
+            this.fillCell(cellBottomLeftX, cellBottomLeftY, row, column, color, writePathText);
+
+            if(writePathText) {
+                this.context.textAlign = 'center';
+                this.context.fillStyle = 'black';
+
+                const centerX = cellBottomLeftX + this.cellSize / 2;
+                const centerY = cellBottomLeftY - this.cellSize / 2 + this.cellSize * .1;
+
+                const topLeftX = centerX + this.cellSize / 4;
+                const topLeftY = centerY - this.cellSize / 3.5;
+
+                const topRightX = centerX - this.cellSize / 4.5;
+                const topRightY = centerY - this.cellSize / 3.5;
+
+                this.context.fillText(gridItem.heapItem.fCost.toString(), centerX, centerY);
+                this.context.fillText(gridItem.heapItem.gCost.toString(), topLeftX, topLeftY);
+                this.context.fillText(gridItem.heapItem.hCost.toString(), topRightX, topRightY);
+            }
         }
     }
 
-    fillCell(cellBottomLeftX, cellBottomLeftY, row, column, color) {
+    fillCell(cellBottomLeftX, cellBottomLeftY, row, column, color, writePathText) {
+
 
         this.context.beginPath();
         this.context.fillStyle = color;
@@ -274,13 +328,14 @@ class GridItem {
 
     constructor(row, column) {
 
-        this.heapItem = new HeapItem(0);
+        this.heapItem = new HeapItem(this);
         this.row = row;
         this.column = column;
         this.isObstacle = false;
         this.drawAsNeighbor = false;
         this.isSource = false;
         this.isDestination = false;
+        this.isPathCell = false;
     }
 
     toggleIsObstacle() {
@@ -297,5 +352,9 @@ class GridItem {
 
     toggleDestinationCell() {
         this.isDestination = !this.isDestination;
+    }
+
+    toggleIsPathCell() {
+        this.isPathCell = !this.isPathCell;
     }
 }
