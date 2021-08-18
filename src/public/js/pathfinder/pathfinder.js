@@ -2,27 +2,35 @@ import {Heap, HeapItem} from './heap.js'
 import {Grid, GridDisplay} from './grid.js'
 
 let gridDisplay, grid;
+let currentCellSelectionIndex = 0;
+
+const selectionOptions = ["Obstacle", "Neighbors", 'Source', 'Destination'];
+const selectionColors = ['red', 'green', 'cyan', 'magenta'];
 
 window.onload = () => {
-    const width = 500;
-    const height = 500;
-    const cellSize = 50;
 
-    const rowCount = width / cellSize;
-    const columnCount = height / cellSize;
+    initializeGrid();
+    initializeTools();
 
-    grid = new Grid(rowCount, columnCount);
-    gridDisplay = new GridDisplay(grid, cellSize, width, height);
-
-    drawGrid();
-
-    document.onmousedown = onClick;
-    document.body.onkeyup = runAStar;
+    document.onmousedown = onClickCell;
 }
 
-function runAStar(event) {
+function initializeTools() {
+    const cellSelectorButton = document.getElementById('cell-selector-button');
+    cellSelectorButton.style.backgroundColor = 'red';
+    cellSelectorButton.innerText = 'Obstacle';
 
-    if (event.code !== 'Space') return;
+    cellSelectorButton.onclick = () => {
+        currentCellSelectionIndex = currentCellSelectionIndex >= selectionOptions.length - 1 ? 0 : currentCellSelectionIndex + 1;
+        cellSelectorButton.style.backgroundColor = selectionColors[currentCellSelectionIndex];
+        cellSelectorButton.innerText = selectionOptions[currentCellSelectionIndex];
+    }
+
+    const findPathButton = document.getElementById('run-astar-button');
+    findPathButton.onclick = runAStar;
+}
+
+function runAStar() {
 
     if (gridDisplay.currentSourceCell === null || gridDisplay.currentDestinationCell === null) return;
 
@@ -36,36 +44,25 @@ function runAStar(event) {
     gridDisplay.displayPath(path, .5);
 }
 
-function onClick(event) {
+function onClickCell(event) {
     const inBounds = gridDisplay.inGridBounds(event.clientX, event.clientY);
 
     if (!inBounds) return;
 
-    if (event.shiftKey && event.ctrlKey) {
-        gridDisplay.resetAllCells();
-        return;
-    }
-
-    // Neighbors and Obstacles
-    if (event.button === 0) {
-        if (event.shiftKey)
-            gridDisplay.toggleDrawAllNeighbors(event.clientX, event.clientY);
-        else
-            gridDisplay.toggleCellAsObstacle(event.clientX, event.clientY);
-
-    }
-    // Source & Destination cells
-    else if (event.button === 1) {
-        if (event.shiftKey) {
-            gridDisplay.toggleSourceCell(event.clientX, event.clientY);
-        } else if (event.ctrlKey) {
-            gridDisplay.toggleDestinationCell(event.clientX, event.clientY);
-        }
-    }
+    gridDisplay.toggleCell(event.clientX, event.clientY, selectionOptions[currentCellSelectionIndex]);
 }
 
+function initializeGrid() {
+    const width = 500;
+    const height = 500;
+    const cellSize = 50;
 
-function drawGrid() {
+    const rowCount = width / cellSize;
+    const columnCount = height / cellSize;
+
+    grid = new Grid(rowCount, columnCount);
+    gridDisplay = new GridDisplay(grid, cellSize, width, height);
+
     gridDisplay.drawGrid();
 }
 

@@ -18,6 +18,8 @@ export class GridDisplay {
 
         this.currentSourceCell = null;
         this.currentDestinationCell = null;
+
+        this.resetAllCells();
     }
 
     initializeCanvas() {
@@ -33,6 +35,9 @@ export class GridDisplay {
         const bounds = this.canvas.getBoundingClientRect();
         this.canvasBottomLeftX = this.padding;
         this.canvasBottomLeftY = bounds.height - this.padding;
+
+        const resetGridButton = document.getElementById('reset-grid-button');
+        resetGridButton.onclick = () => this.resetAllCells();
     }
 
     inGridBounds(x, y) {
@@ -105,7 +110,6 @@ export class GridDisplay {
 
                 const currentCell = path[currentPathIndex];
 
-
                 currentCell.toggleIsPathCell();
 
                 this.fillCells();
@@ -127,7 +131,26 @@ export class GridDisplay {
         this.currentSourceCell = null;
         this.currentDestinationCell = null;
 
+        this.toggleFindPathButton(true);
+
         this.fillCells();
+    }
+
+    toggleCell(x, y, selectedOption) {
+        if(selectedOption === 'Obstacle')
+            this.toggleCellAsObstacle(x, y);
+        else if (selectedOption === 'Neighbors')
+            this.toggleDrawAllNeighbors(x, y);
+        else if (selectedOption === 'Source')
+            this.toggleSourceCell(x, y);
+        else if (selectedOption === 'Destination')
+            this.toggleDestinationCell(x, y);
+    }
+
+    toggleFindPathButton(disabled) {
+        const findPathButton = document.getElementById('run-astar-button');
+
+        findPathButton.disabled = disabled;
     }
 
     toggleCellAsObstacle(x, y) {
@@ -168,6 +191,8 @@ export class GridDisplay {
 
         this.currentSourceCell = gridItem;
 
+        this.toggleFindPathButton(this.currentSourceCell === null || this.currentDestinationCell === null);
+
         this.fillCells();
     }
 
@@ -188,6 +213,8 @@ export class GridDisplay {
         gridItem.toggleDestinationCell();
 
         this.currentDestinationCell = gridItem;
+
+        this.toggleFindPathButton(this.currentSourceCell === null || this.currentDestinationCell === null);
 
         this.fillCells();
     }
@@ -306,7 +333,7 @@ export class Grid {
             for(let x = -1; x <= 1; x++) {
 
                 // Same cell as input.
-                if(x === 0 && y === 0) continue;
+                if(x === 0 && y === 0 || Math.abs(x) === 1 && Math.abs(y) === 1) continue;
 
                 const offsetY = gridItem.row + y;
                 const offsetX = gridItem.column + x;

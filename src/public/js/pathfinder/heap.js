@@ -21,7 +21,7 @@ export class HeapItem {
 
     compareTo(other) {
         /*
-        Priority is descending.  1 if greater priority, 0 if equivalent priority and -1 if lower priority.
+        Priority is descending.  1 if greater priority, -1 if lower priority.
          */
 
         if(this.fCost === other.fCost)
@@ -63,6 +63,7 @@ export class Heap {
         this.items[0] = this.items[this.itemCount];
         this.items[0].heapIndex = 0;
         this.sortDown(this.items[0]);
+        this.items.pop();
         return first;
     }
 

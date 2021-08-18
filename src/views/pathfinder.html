@@ -7,8 +7,89 @@ set title = 'Connor Wendt' %}
 {% endblock %}
 
 
+
 {% block content %}
-<div id="pathfinder-parent"></div>
+<div role="main" class="jumbotron p-3 p-md-5 mt-5 text-white rounded bg-dark">
+    <h1 class="display-4 font-italic text-center">A* Pathfinding</h1><br>
+    <div class="blog-post" id="a-star-blog-post-body">
+
+        A* (pronounced "A-star") is a graph traversal and path search algorithm, which is often used in many fields of computer science due to its completeness, optimality, and optimal efficiency.
+        <br><br>
+        The aim of A*, or other best-first search algorithms, is to find a path to the given goal node having the smallest cost.  A tree of paths originating from the source node that extend one edge at a time until some termination criterion is satisfied is maintained.  Typically a priority queue, commonly referred to as the <i>open set</i>, is used to select the minimum cost nodes to expand.
+        In terms of acceptability criteria, the path that minimizes <i> f(n) = g(n) + h(n)</i>, where <i>g(n)</i> represents the cost of the path from the start node to <i>n</i> and <i>h(n)</i> represents a heuristic function that estimates the cost of the cheapest path from <i>n</i> to the target node, is selected as the cheapest path.
+        <br><br>
+        The grid drawn below provides a means to test out the algorithm.  The top left button labeled <samp style="color:red">Obstacle</samp>
+        represents the current selection type - in this case, meaning when you click the grid, the node clicked will be registered
+        as an obstacle and can't be traversed.  A node colored <b><samp style="color:black">Black</samp></b> indicates the node can be traversed.  Click the <samp style="color:red">Obstacle</samp> button to change the selection type.  The
+        <samp style="color:green">Neighbor</samp> selection will display all valid neighboring nodes to be processed - clicking a node with
+        <samp style="color:green">Neighbor</samp> simply visualizes a given node's neighbors, it doesn't change the simulation.  The
+        <samp style="color:white">Find Path</samp> button will become active when the <samp style="color:cyan">Source</samp> and <samp style="color:magenta">Destination</samp> nodes have
+        been defined.
+        <br><br>
+        Once the algorithm has found the cheapest path to the destination node, nodes extending the edge to the destination will turn
+        <samp style="color:yellow">Yellow</samp>.  <br>Three numbers will appear on each of the <samp style="color:yellow">Path</samp> nodes:<br>
+        <ul>
+            <li>
+                The top left number indicates the node's <b>H-Cost</b>, or heuristic cost.  In this case the heuristic cost represents the node's distance to the <samp style="color:magenta">Destination</samp> node.<br>
+            </li>
+            <li>
+                The top right number indicates the node's <b>G-Cost</b>, or the cost from the node to the <samp style="color:cyan">Source</samp> node.<br>
+            </li>
+            <li>
+                The middle number indicates the node's <b>F-Cost</b>, or the sum of the node's <b>H-Cost</b> and <b>G-Cost</b>.  The <b>F-Cost</b> is the metric by which a node is sorted in the priority queue.
+                The lower the <b>F-Cost</b>, the cheaper the path.
+            </li>
+        </ul>
+    </div>
+
+    <div class="d-flex" id="pathfinder-parent">
+        <div id="cell-selector" style="order: 2">
+            <button class="btn btn-outline-light" id="cell-selector-button"></button>
+            <button class="btn btn-outline-light" id="reset-grid-button">Reset Grid</button>
+            <button class="btn btn-outline-light" id="run-astar-button" disabled>Find Path</button>
+        </div>
+    </div>
+
+    <div class="blog-post">
+        <br><br><br>
+        The algorithm can be described with the following pseudocode:
+        <br>
+
+        <code>
+            define the open set (priority queue)
+            define the closed set (to keep track of nodes already investigated)
+
+            while the open set isn't empty:
+
+                remove the "best" node from the priority queue (using fcost)
+                add this node to the closed set
+
+                if this node is the target node:
+                    path found!
+                otherwise:
+
+                for each neighbor node to the current "best" node
+
+                    If the neighbor has already been explored or it's not accessible
+                        continue to the next neighbor
+
+                    calculate the cost to move from the "best" node to the neighbor (gcost)
+                    add the calculated cost to the "best" node's gcost
+
+                    if the updated gcost is lower than the previous gcost or the neighbor hasn't been explored yet
+
+                        set the neighbor's gcost to the new gcost
+                        find and set the neighbor's heuristic cost (hcost)
+                        set the neighbor's parent node to the "best" node
+
+                        if the neighbor hasn't been explored
+                            add it to the open set
+                        otherwise, if it has
+                            update the priority queue to reflect the changes
+        </code>
+    </div>
+</div>
+
 {% endblock content %}
 
 

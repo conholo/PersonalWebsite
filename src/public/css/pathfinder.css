@@ -6,3 +6,43 @@ html, body{
     width: 50%;
     margin: 0 auto;
 }
+
+code {
+    display: block;
+    white-space: pre-wrap
+}
+
+
+#cell-selector {
+    display: block;
+    margin-top: 10px;
+    margin-left: 20px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+#reset-grid-button {
+    width: 100px;
+    height: 50px;
+    margin-top: 30px;
+    color: white;
+}
+
+#cell-selector-button {
+    width: 100px;
+    height: 50px;
+    margin-top: 30px;
+    color: white;
+}
+
+#run-astar-button {
+    width: 100px;
+    height: 50px;
+    margin-top: 30px;
+    color: white;
+}
+
+#a-star-blog-post-body {
+    color: white;
+}
