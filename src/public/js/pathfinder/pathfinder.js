@@ -63,7 +63,7 @@ function initializeGrid() {
     grid = new Grid(rowCount, columnCount);
     gridDisplay = new GridDisplay(grid, cellSize, width, height);
 
-    gridDisplay.drawGrid();
+    gridDisplay.drawGridLines();
 }
 
 

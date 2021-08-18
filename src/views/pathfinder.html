@@ -54,39 +54,42 @@ set title = 'Connor Wendt' %}
         <br><br><br>
         The algorithm can be described with the following pseudocode:
         <br>
+        <div style="background-color: dimgrey; border: 1px solid white; border-radius: 30px">
+            <code style="color: deepskyblue">
+                define the open set (priority queue)
+                define the closed set (to keep track of nodes already investigated)
 
-        <code>
-            define the open set (priority queue)
-            define the closed set (to keep track of nodes already investigated)
+                while the open set isn't empty:
 
-            while the open set isn't empty:
+                    remove the "best" node from the priority queue (using fcost)
+                    add this node to the closed set
 
-                remove the "best" node from the priority queue (using fcost)
-                add this node to the closed set
+                    if this node is the target node:
+                        path found!
+                    otherwise:
 
-                if this node is the target node:
-                    path found!
-                otherwise:
+                    for each neighbor node to the current "best" node
 
-                for each neighbor node to the current "best" node
+                        If the neighbor has already been explored or it's not accessible
+                            continue to the next neighbor
 
-                    If the neighbor has already been explored or it's not accessible
-                        continue to the next neighbor
+                        calculate the cost to move from the "best" node to the neighbor (gcost)
+                        add the calculated cost to the "best" node's gcost
 
-                    calculate the cost to move from the "best" node to the neighbor (gcost)
-                    add the calculated cost to the "best" node's gcost
+                        if the updated gcost is lower than the previous gcost or the neighbor hasn't been explored yet
 
-                    if the updated gcost is lower than the previous gcost or the neighbor hasn't been explored yet
+                            set the neighbor's gcost to the new gcost
+                            find and set the neighbor's heuristic cost (hcost)
+                            set the neighbor's parent node to the "best" node
 
-                        set the neighbor's gcost to the new gcost
-                        find and set the neighbor's heuristic cost (hcost)
-                        set the neighbor's parent node to the "best" node
+                            if the neighbor hasn't been explored
+                                add it to the open set
+                            otherwise, if it has
+                                update the priority queue to reflect the changes
+            </code>
 
-                        if the neighbor hasn't been explored
-                            add it to the open set
-                        otherwise, if it has
-                            update the priority queue to reflect the changes
-        </code>
+        </div>
+
     </div>
 </div>
 

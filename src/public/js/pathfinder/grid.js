@@ -3,6 +3,14 @@ import {HeapItem} from './heap.js'
 
 export class GridDisplay {
 
+    /**
+     * Represents the behavior and state of the rendered grid.
+     * @constructor
+     * @param {Grid} grid
+     * @param {number} cellSize
+     * @param {number} width
+     * @param {number} height
+     */
     constructor(grid, cellSize, width, height) {
 
         this.grid = grid;
@@ -22,6 +30,12 @@ export class GridDisplay {
         this.resetAllCells();
     }
 
+    /**
+     * Initializes the grid-rendering canvas with a width and height.
+     * The canvas is appended to a parent div.
+     * The bottom left coordinate of the canvas is stored for future use when filling grid cells.
+     * A reset button is initialized so that on click the grid is effectively cleared and redrawn to display grid lines.
+     */
     initializeCanvas() {
         const canvasWidth = this.width + (this.padding * 2) + 1;
         const canvasHeight = this.height + (this.padding * 2) + 1;
@@ -40,6 +54,12 @@ export class GridDisplay {
         resetGridButton.onclick = () => this.resetAllCells();
     }
 
+    /**
+     * Checks whether the given coordinate is within the bounds of the canvas rect.
+     * @param {number} x - The x coordinate to check if in bounds.
+     * @param {number} y - The y coordinate to check if in bounds.
+     * @returns {boolean} - Is the coordinate within the bounds of the canvas rect?
+     */
     inGridBounds(x, y) {
 
         const bounds = this.canvas.getBoundingClientRect();
@@ -47,7 +67,10 @@ export class GridDisplay {
         return x < bounds.right - this.padding && x > bounds.left + this.padding && y < bounds.bottom - this.padding && y > bounds.top + this.padding;
     }
 
-    drawGrid() {
+    /**
+     * Draws the grid lines for the grid using the width, height and cell size provided to the constructor.
+     */
+    drawGridLines() {
 
         this.context.beginPath();
 
@@ -68,6 +91,12 @@ export class GridDisplay {
         this.context.closePath();
     }
 
+    /**
+     * If the given coordinate is contained in the grid bounds, returns the nearest GridItem.
+     * @param x
+     * @param y
+     * @returns {GridItem}
+     */
     getGridCellFromMousePosition(x, y) {
         // Setup
         const bounds = this.canvas.getBoundingClientRect();
@@ -98,6 +127,12 @@ export class GridDisplay {
         return gridItem;
     }
 
+    /**
+     * Sets the "isPath" flag for each GridItem contained in the path array.
+     * The flag is used when filling the cells of the grid.
+     * @param {GridItem[]} path
+     * @param {number} intervalSeconds
+     */
     displayPath(path, intervalSeconds) {
 
         let currentPathIndex = 1;
@@ -120,6 +155,11 @@ export class GridDisplay {
     }
 
 
+    /**
+     * Toggles all state members of a GridItem object to false.
+     * When this occurs, a redraw of the grid will render only the grid lines and will fill each
+     * cell with a black rect.
+     */
     resetAllCells() {
         this.grid.gridItems.forEach(t => { t.drawAsNeighbor = false; t.isObstacle = false; t.isPathCell = false;})
 
@@ -136,6 +176,12 @@ export class GridDisplay {
         this.fillCells();
     }
 
+    /**
+     * Toggles the given flag (selectedOption) of the closest GridItem to the coordinate (x, y).
+     * @param {number} x
+     * @param {number} y
+     * @param {string} selectedOption
+     */
     toggleCell(x, y, selectedOption) {
         if(selectedOption === 'Obstacle')
             this.toggleCellAsObstacle(x, y);
@@ -147,12 +193,21 @@ export class GridDisplay {
             this.toggleDestinationCell(x, y);
     }
 
+    /**
+     * Enables or disables the button for finding a path.
+     * @param {boolean} disabled
+     */
     toggleFindPathButton(disabled) {
         const findPathButton = document.getElementById('run-astar-button');
 
         findPathButton.disabled = disabled;
     }
 
+    /**
+     * Finds the nearest cell to the coordinate (x, y) then toggles the "Obstacle" state of the cell.
+     * @param {number} x
+     * @param {number} y
+     */
     toggleCellAsObstacle(x, y) {
 
         const gridItem = this.getGridCellFromMousePosition(x, y);
@@ -162,6 +217,11 @@ export class GridDisplay {
         this.fillCells();
     }
 
+    /**
+     * Finds the nearest cell to the coordinate (x, y) then toggles the "Neighbor" state of the cell.
+     * @param {number} x
+     * @param {number} y
+     */
     toggleDrawAllNeighbors(x, y) {
 
         const gridItem = this.getGridCellFromMousePosition(x, y);
@@ -173,6 +233,11 @@ export class GridDisplay {
         this.fillCells();
     }
 
+    /**
+     * Finds the nearest cell to the coordinate (x, y) then toggles the "Source" state of the cell.
+     * @param {number} x
+     * @param {number} y
+     */
     toggleSourceCell(x, y) {
 
         const gridItem = this.getGridCellFromMousePosition(x, y);
@@ -196,6 +261,11 @@ export class GridDisplay {
         this.fillCells();
     }
 
+    /**
+     * Finds the nearest cell to the coordinate (x, y) then toggles the "Destination" state of the cell.
+     * @param {number} x
+     * @param {number} y
+     */
     toggleDestinationCell(x, y) {
 
         const gridItem = this.getGridCellFromMousePosition(x, y);
@@ -219,11 +289,24 @@ export class GridDisplay {
         this.fillCells();
     }
 
+    /**
+     * Fills each of the cells with a rect of a given color depending on the state of each cell.
+     * 'green' - neighbor flag on.
+     * 'red' - obstacle flag on.
+     * 'cyan' - source flag on.
+     * 'magenta' - destination flag on.
+     * 'yellow' - path flag on.
+     * If the cell has the path flag turned on, text is filled onto the cell's rect to display the hCost, gCost
+     * and fCost of the cell's heapItem.
+     * hCost - top left
+     * gCost - top right
+     * fCost - middle
+     */
     fillCells() {
 
         // Clear then redraw.
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawGrid();
+        this.drawGridLines();
 
         // Iterate over all of the grid items, filling their cells depending on their state.
         // Red if obstacle, black if not.
@@ -249,7 +332,7 @@ export class GridDisplay {
                 color = !gridItem.isSource && !gridItem.isDestination ? color : gridItem.isSource ? 'cyan' : 'magenta';
             }
 
-            this.fillCell(cellBottomLeftX, cellBottomLeftY, row, column, color, writePathText);
+            this.fillCell(cellBottomLeftX, cellBottomLeftY, color);
 
             if(writePathText) {
                 this.context.textAlign = 'center';
@@ -271,7 +354,13 @@ export class GridDisplay {
         }
     }
 
-    fillCell(cellBottomLeftX, cellBottomLeftY, row, column, color, writePathText) {
+    /**
+     * Performs the color filling of a portion of the canvas representing a grid cell.
+     * @param {number} cellBottomLeftX
+     * @param {number} cellBottomLeftY
+     * @param {string} color
+     */
+    fillCell(cellBottomLeftX, cellBottomLeftY, color) {
 
 
         this.context.beginPath();
@@ -286,6 +375,11 @@ export class GridDisplay {
 
 export class Grid {
 
+    /**
+     * Represents a 2D grid.
+     * @param {number} rowCount
+     * @param {number} columnCount
+     */
     constructor(rowCount, columnCount) {
 
         this.rowCount = rowCount;
@@ -296,6 +390,9 @@ export class Grid {
         this.initializeGridItems();
     }
 
+    /**
+     * Constructs and pushes (row * columns) GridItems into a member array.
+     */
     initializeGridItems() {
         for(let y = 0; y < this.rowCount; y++) {
             for(let x = 0; x < this.columnCount; x++) {
@@ -304,6 +401,12 @@ export class Grid {
         }
     }
 
+    /**
+     * Returns the GridItem located at the given row/column.
+     * @param {number} row
+     * @param {number} column
+     * @returns {GridItem}
+     */
     getGridItem(row, column) {
         if(row >= this.rowCount || column >= this.columnCount || row < 0 || column < 0)
             return null;
@@ -311,20 +414,11 @@ export class Grid {
         return this.gridItems[row * this.columnCount + column];
     }
 
-    getAllObstacleCells() {
-
-        const obstacleCells = [];
-
-        for(let i = 0; i < this.rowCount * this.columnCount; i++) {
-
-            if(!this.gridItems[i].isObstacle) continue;
-
-            obstacleCells.push(this.gridItems[i]);
-        }
-
-        return obstacleCells;
-    }
-
+    /**
+     * Finds all orthogonal cells to the given cell.
+     * @param {GridItem} gridItem - The GridItem to find neighbors for.
+     * @returns {GridItem[]} - The neighboring cells.
+     */
     getNeighborCells(gridItem) {
 
         const neighbors = [];
@@ -353,6 +447,11 @@ export class Grid {
 
 class GridItem {
 
+    /**
+     * Represents a grid cell.
+     * @param {number} row
+     * @param {number} column
+     */
     constructor(row, column) {
 
         this.heapItem = new HeapItem(this);
@@ -365,22 +464,37 @@ class GridItem {
         this.isPathCell = false;
     }
 
+    /**
+     * Toggles the isObstacle flag.
+     */
     toggleIsObstacle() {
         this.isObstacle = !this.isObstacle;
     }
 
+    /**
+     * Toggles the drawAsNeighbor flag.
+     */
     toggleIsNeighbor() {
         this.drawAsNeighbor = !this.drawAsNeighbor;
     }
 
+    /**
+     * Toggles the isSource flag.
+     */
     toggleSourceCell() {
         this.isSource = !this.isSource;
     }
 
+    /**
+     * Toggles the isDestination flag.
+     */
     toggleDestinationCell() {
         this.isDestination = !this.isDestination;
     }
 
+    /**
+     * Toggles the isPathCell flag.
+     */
     toggleIsPathCell() {
         this.isPathCell = !this.isPathCell;
     }
