@@ -1,4 +1,3 @@
-import {Heap, HeapItem} from './heap.js'
 import {Grid, GridDisplay} from './grid.js'
 
 let gridDisplay, grid;
@@ -6,6 +5,7 @@ let currentCellSelectionIndex = 0;
 
 const selectionOptions = ["Obstacle", "Neighbors", 'Source', 'Destination'];
 const selectionColors = ['red', 'green', 'cyan', 'magenta'];
+import {Heap, HeapItem} from './heap.js'
 
 window.onload = () => {
 

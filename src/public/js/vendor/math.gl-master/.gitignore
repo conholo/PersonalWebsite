@@ -1,0 +1,22 @@
+dist/*
+dist-esm/*
+dist-es6/*
+**/dist/*
+
+node_modules/
+coverage/
+.nyc_output/
+
+npm-debug.log
+*/**/yarn.lock
+yarn-error.log
+report*.json
+
+# editor files
+.project
+.DS_Store
+.idea
+*.zip
+*.rar
+
+.reify-cache

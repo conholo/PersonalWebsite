@@ -1,0 +1,46 @@
+{% set title = '2D Engine' %}
+
+{% extends 'layout.html' %}
+
+{% block style %}
+<link href="/css/2D_engine.css" rel="stylesheet">
+
+<script  id="vertex-shader-2d" type="x-shader/x-vertex">#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_Position;
+layout(location = 1) in vec3 a_Color;
+
+uniform mat4 u_MVP;
+
+out vec3 v_Color;
+
+void main()
+{
+    v_Color = a_Color;
+    gl_Position = u_MVP * vec4(a_Position, 1.0);
+}
+</script>
+<script  id="fragment-shader-2d" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+layout(location = 0) out vec4 o_Color;
+
+in vec3 v_Color;
+
+void main()
+{
+    o_Color = vec4(v_Color, 1.0);
+}
+</script>
+{% endblock %}
+
+
+{% block content %}
+<canvas id="glCanvas" width="800" height="800"></canvas>
+{% endblock content %}
+
+
+{% block script %}
+<script src="/@math.gl/core/src/classes/vector3.js" type="module"></script>
+<script src="/@math.gl/core/src/classes/matrix4.js" type="module"></script>
+<script src="/js/2DEngine/2D_engine.js" type="module"> </script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{
+  "name": "math.gl",
+  "description": "Array-based 3D Math Classes optimized for WebGL applications",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uber-web/math.gl.git"
+  },
+  "workspaces": [
+    "modules/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "bootstrap": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn && ocular-bootstrap",
+    "build": "ocular-clean && ocular-build",
+    "cover": "ocular-test cover",
+    "lint": "tsc && ocular-lint",
+    "metrics": "ocular-metrics",
+    "publish": "ocular-publish",
+    "test": "ocular-test",
+    "test-size-explicit": "npm run build && webpack --config test/webpack.config.js --env.import-vec4-mat4-explicit",
+    "test-size": "npm run build && webpack --config test/webpack.config.js --env.import-nothing"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.12.0",
+    "gl-matrix": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/register": "^7.13.16",
+    "@probe.gl/bench": "^3.3.0",
+    "@probe.gl/test-utils": "^3.3.0",
+    "@turf/destination": "^6.0.1",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
+    "ocular-dev-tools": "1.0.0-alpha.7",
+    "pre-commit": "^1.2.2"
+  },
+  "resolutions_notes": [
+    "Note: tape 4.12 and higher no longer compares 0 and -0 equally..."
+  ],
+  "resolutions": {
+    "tape": "4.11.0"
+  }
+}
