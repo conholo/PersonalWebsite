@@ -13,14 +13,25 @@ export class ShaderAttributeType {
     static Bool = new ShaderAttributeType('Bool');
 
     constructor(name) {
-        this._name = name;
-        this._size = this.sizeInBytes();
-        this._componentCount = this.componentCount();
+        this.name = name;
+        this.size = this.sizeInBytes();
+        this.componentCount = this.componentCount();
     }
 
+    getShaderAttributeName() {
+        return this.name;
+    }
+
+    getSize() {
+        return this.size;
+    }
+
+    getComponentCount() {
+        return this.componentCount;
+    }
 
     sizeInBytes() {
-        switch(this._name) {
+        switch(this.name) {
             case 'Float'       : return 1 * 4;
             case 'Vector2'      : return 2 * 4;
             case 'Vector3'      : return 3 * 4;
@@ -33,12 +44,12 @@ export class ShaderAttributeType {
             case 'Vector4Int'   : return 4 * 4;
             case 'Bool'         : return 1;
             default:
-                throw ("Unable to determine size in bytes for Unknown Shader Attribute Type: " + this._name);
+                throw ("Unable to determine size in bytes for Unknown Shader Attribute Type: " + this.name);
         }
     }
 
     componentCount() {
-        switch(this._name) {
+        switch(this.name) {
             case 'Float'       : return 1;
             case 'Vector2'      : return 2;
             case 'Vector3'      : return 3;
@@ -51,7 +62,7 @@ export class ShaderAttributeType {
             case 'Vector4Int'   : return 4;
             case 'Bool'         : return 1;
             default:
-                throw ("Unable to determine component count for Unknown Shader Attribute Type: " + this._name);
+                throw ("Unable to determine component count for Unknown Shader Attribute Type: " + this.name);
         }
     }
 }
@@ -61,34 +72,34 @@ export class BufferElement {
 
     constructor(name, shaderAttributeType, normalize = false) {
 
-        this._name = name;
-        this._shaderAttributeType = shaderAttributeType;
-        this._offset = 0;
-        this._normalize = normalize;
+        this.name = name;
+        this.shaderAttributeType = shaderAttributeType;
+        this.offset = 0;
+        this.normalize = normalize;
     }
 
     getBufferElementName() {
-        return this._name;
+        return this.name;
     }
 
     getEngineType() {
-        return this._shaderAttributeType._name;
+        return this.shaderAttributeType.getShaderAttributeName();
     }
 
     getSize() {
-        return this._shaderAttributeType._size;
+        return this.shaderAttributeType.getSize();
     }
 
     getOffset() {
-        return this._offset;
+        return this.offset;
     }
 
     getComponentCount() {
-        return this._shaderAttributeType._componentCount;
+        return this.shaderAttributeType.getComponentCount();
     }
 
     shouldNormalize() {
-        return this._normalize;
+        return this.normalize;
     }
 }
 
@@ -100,16 +111,24 @@ export class BufferLayout {
      * @param elements [ShaderAttributeType[]]
      */
     constructor(elements) {
-        this._stride = 0;
-        this._elements = elements;
+        this.stride = 0;
+        this.elements = elements;
         let currentOffset = 0;
 
         for(let i = 0; i < elements.length; ++i) {
             const element = elements[i];
 
-            this._stride += element.getSize();
-            element._offset = currentOffset;
+            this.stride += element.getSize();
+            element.offset = currentOffset;
             currentOffset += element.getSize();
         }
+    }
+
+    getElements() {
+        return this.elements;
+    }
+
+    getStride() {
+        return this.stride;
     }
 }

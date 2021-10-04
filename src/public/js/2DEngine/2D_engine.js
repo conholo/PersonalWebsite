@@ -1,71 +1,99 @@
 import {Shader} from './rendering/shader.js';
-import {BufferLayout, BufferElement, ShaderAttributeType} from './rendering/bufferlayout.js';
-import {VertexBuffer, IndexBuffer} from "./rendering/buffer.js";
 import {VertexArray} from "./rendering/vertexarray.js";
-import {Vector3, Matrix4} from "./math/math.js";
+import {Camera} from "./rendering/camera.js"
+import {Input} from "./core/input.js"
+import {Mesh} from "./rendering/mesh.js"
+import {Material} from "./rendering/material.js"
+
+import {World} from "./ecs/entity.js"
+import {RenderSystem} from "./ecs/systems/meshRendererSystem.js"
+import {MeshRendererComponent} from "./ecs/components/meshRendererComponent.js";
+
 
 class Application {
 
     constructor() {
-        this._canvas = document.querySelector("#glCanvas");
-        this._gl = this._canvas.getContext("webgl2");
+        this.canvas = document.querySelector("#glCanvas");
+        this.gl = this.canvas.getContext("webgl2");
 
-        if(!this._gl) {
+        if(!this.gl) {
             alert("Problem initializing WebGL context.  Your browser may not support WebGL.")
             throw("Failure to initialize WebGL context.");
         }
+
+        this.lastFrameTime = 0.0;
+
+        const cameraProperties = {
+            type: "perspective",
+            aspectRatio: this.gl.canvas.width / this.gl.canvas.height,
+            fov: 45.0,
+            nearClip: 0.1,
+            farClip: 1000.0
+        }
+
+        this.camera = new Camera(cameraProperties);
+        this.input = new Input([this.camera.onScroll.bind(this.camera)]);
+        document.onmousemove = this.input.onMouseMove.bind(this.input);
+        document.onmousedown = this.input.onMouseDown.bind(this.input);
+        document.onmouseup = this.input.onMouseUp.bind(this.input);
+        document.onkeydown = (event) => {
+            this.input.onKeyDown(event);
+
+            if(event.code === "KeyP")
+                this.camera.setCameraType("perspective");
+            else if(event.code === "KeyO")
+                this.camera.setCameraType("orthographic");
+        }
+        document.onkeyup = this.input.onKeyUp.bind(this.input);
+        document.onwheel = this.input.onScroll.bind(this.input);
 
         const triangleVertices = new Float32Array(
                 [-0.5, -0.5, 0.0, 1.0, 0.0, 0.0,
                   0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
                   0.0,  0.5, 0.0, 0.0, 0.0, 1.0]
         );
-
         const triangleIndices = new Uint32Array([0, 2, 1]);
 
-        const layout =
-            [
-                new BufferElement("a_Position", ShaderAttributeType.Vector3),
-                new BufferElement("a_Color", ShaderAttributeType.Vector3),
-            ];
-        this._bufferLayout = new BufferLayout(layout);
+        this.world = new World();
 
-        this._vertexArray = new VertexArray(this._gl);
+        this.world.registerSystem("MeshRenderer",
+            new RenderSystem(
+                this.world,
+                {
+                    requiredComponents: ["MeshRenderer", 'Transform'],
+                    camera: this.camera
+                },
+                this.gl), 0
+        );
 
-        this._vertexBuffer = new VertexBuffer(this._gl, triangleVertices.BYTES_PER_ELEMENT * triangleVertices.length, triangleVertices, this._gl.STATIC_DRAW);
-        this._vertexBuffer.setBufferLayout(this._bufferLayout);
+        const triangleEntity = this.world.createEntity("Triangle");
+        triangleEntity.addComponent("MeshRenderer",
+            new MeshRendererComponent(
+            {
+                mesh: new Mesh(this.gl, triangleVertices, triangleIndices),
+                material: new Material(new Shader(this.gl, ["vertex-shader-2d", "fragment-shader-2d"]))
+            })
+        );
 
-        this._indexBuffer = new IndexBuffer(this._gl, triangleIndices.BYTES_PER_ELEMENT * triangleIndices.length, 3, triangleIndices, this._gl.STATIC_DRAW);
-
-        this._vertexArray.addVertexBuffer(this._vertexBuffer);
-        this._vertexArray.setIndexBuffer(this._indexBuffer);
-        this._shader = new Shader(this._gl, ["vertex-shader-2d", "fragment-shader-2d"]);
-        this.drawScene();
+        this.run();
     }
 
-    drawScene() {
-        this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
-        this._gl.clear(this._gl.COLOR_BUFFER_BIT);
+    run() {
 
-       const orthoParameters = {left: -1.0, right:1.0, bottom:-1.0, top:1.0, near:.1, far:10.0}
-       const orthographicMatrix = new Matrix4().ortho(orthoParameters);
+        requestAnimationFrame(() => {
 
-       const modelEulerAngles = new Vector3(0, 0, 0);
-       const modelTranslation =  new Vector3(0, 0, 0);
-       const modelScale =  new Vector3(1, 1, 1);
-       const modelMatrix = new Matrix4().translate(modelTranslation).rotateXYZ(modelEulerAngles).scale(modelScale);
+            const time = new Date().getTime();
+            const deltaTime = (time - this.lastFrameTime) / 1000.0;
+            this.lastFrameTime = time;
 
-       const viewOrigin = new Vector3(0, 0, 10);
-       const viewLookAt = new Vector3(0, 0, 0);
-       const viewUp = new Vector3(0, 1, 0);
-       const viewMatrix = new Matrix4().lookAt(viewOrigin, viewLookAt, viewUp);
+            this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+            this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-       const mvp = orthographicMatrix.multiplyRight(viewMatrix).multiplyRight(modelMatrix);
+            this.camera.updateCamera(this.input, deltaTime);
+            this.world.execute();
 
-       this._shader.bind();
-       this._shader.uploadMat4("u_MVP", mvp);
-
-        this._gl.drawElements(this._gl.TRIANGLES, this._indexBuffer._count, this._gl.UNSIGNED_INT, null);
+            this.run();
+        })
     }
 }
 

@@ -18,17 +18,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Matrix from './base/matrix';
-import {checkVector, deprecated} from '../lib/validators';
+import Matrix from './base/matrix.js';
+import {checkVector, deprecated} from '../lib/validators.js';
 // eslint-disable-next-line camelcase
-import {vec4_transformMat3} from '../lib/gl-matrix-extras';
+import {vec4_transformMat3} from '../lib/gl-matrix-extras.js';
 
 // @ts-ignore: error TS2307: Cannot find module 'gl-matrix/...'.
-import * as mat3 from 'gl-matrix/mat3';
+import * as mat3 from '../../../../../gl-matrix-master/src/mat3.js';
 // @ts-ignore: error TS2307: Cannot find module 'gl-matrix/...'.
-import * as vec2 from 'gl-matrix/vec2';
+import * as vec2 from '../../../../../gl-matrix-master/src/vec2.js';
 // @ts-ignore: error TS2307: Cannot find module 'gl-matrix/...'.
-import * as vec3 from 'gl-matrix/vec3';
+import * as vec3 from '../../../../../gl-matrix-master/src/vec3.js';
 
 const IDENTITY = Object.freeze([1, 0, 0, 0, 1, 0, 0, 0, 1]);
 const ZERO = Object.freeze([0, 0, 0, 0, 0, 0, 0, 0, 0]);

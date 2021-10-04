@@ -3,52 +3,56 @@ import {Shader} from './shader.js'
 export class VertexArray {
 
     constructor(gl) {
+        this.vertexBuffer = null;
+        this.indexBuffer = null;
 
-        this._vertexBuffers = [];
-        this._indexBuffer = null;
-
-        this._gl = gl;
-        this._rendererID = gl.createVertexArray();
+        this.gl = gl;
+        this.rendererID = gl.createVertexArray();
         this.bind();
     }
 
-    addVertexBuffer(vertexBuffer) {
+    setVertexBuffer(vertexBuffer) {
         this.bind()
         vertexBuffer.bind();
 
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer._rendererID);
+        const layout = vertexBuffer.getLayout();
+        for(let i = 0; i < layout.getElements().length; i++) {
 
-        let attributeIndex = 0;
-
-        for(let i = 0; i < vertexBuffer._layout._elements.length; i++) {
-
-            const element = vertexBuffer._layout._elements[i];
-            this._gl.enableVertexAttribArray(i);
-            this._gl.vertexAttribPointer(
+            const element = layout.getElements()[i];
+            this.gl.enableVertexAttribArray(i);
+            this.gl.vertexAttribPointer(
                 i,
                 element.getComponentCount(),
-                Shader.GetGLTypeFromEngineType(this._gl, element.getEngineType()),
+                Shader.GetGLTypeFromEngineType(this.gl, element.getEngineType()),
                 element.shouldNormalize(),
-                vertexBuffer._layout._stride,
+                layout.getStride(),
                 element.getOffset());
 
         }
 
-        this._vertexBuffers.push(vertexBuffer);
+        this.vertexBuffer = vertexBuffer;
+    }
+
+    getIndexBuffer() {
+        return this.indexBuffer;
+    }
+
+    getVertexBuffer() {
+        return this.vertexBuffer;
     }
 
     setIndexBuffer(indexBuffer) {
         this.bind();
         indexBuffer.bind();
 
-        this._indexBuffer = indexBuffer;
+        this.indexBuffer = indexBuffer;
     }
 
     bind() {
-        this._gl.bindVertexArray(this._rendererID);
+        this.gl.bindVertexArray(this.rendererID);
     }
 
     unbind() {
-        this._gl.bindVertexArray(0);
+        this.gl.bindVertexArray(null);
     }
 }

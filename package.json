@@ -9,7 +9,7 @@
     "glMath": "^0.1.0",
     "jsdoc": "^3.6.7",
     "math.gl": "^3.5.5",
-    "nodemon": "^2.0.12",
+    "nodemon": "^2.0.13",
     "rollup-plugin-terser": "^7.0.2"
   },
   "devDependencies": {

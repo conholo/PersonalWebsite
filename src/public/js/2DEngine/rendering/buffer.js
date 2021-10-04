@@ -1,26 +1,30 @@
 export class VertexBuffer {
 
     constructor(gl, size, vertices, usage) {
-        this._gl = gl;
-        this._size = size;
-        this._vertices = vertices;
-        this._layout = null;
+        this.gl = gl;
+        this.size = size;
+        this.vertices = vertices;
+        this.layout = null;
 
-        this._rendererID = gl.createBuffer();
+        this.rendererID = gl.createBuffer();
         this.bind();
         gl.bufferData(gl.ARRAY_BUFFER, vertices, usage);
     }
 
+    getLayout() {
+        return this.layout;
+    }
+
     setBufferLayout(layout) {
-        this._layout = layout;
+        this.layout = layout;
     }
 
     bind() {
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._rendererID);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.rendererID);
     }
 
     unbind() {
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, 0);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     }
 }
 
@@ -28,21 +32,25 @@ export class IndexBuffer {
 
     constructor(gl, size, count, indices, usage) {
 
-        this._gl = gl;
-        this._size = size;
-        this._count = count;
-        this._indices = indices;
+        this.gl = gl;
+        this.size = size;
+        this.count = count;
+        this.indicies = indices;
 
-        this._rendererID = gl.createBuffer();
+        this.rendererID = gl.createBuffer();
         this.bind();
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, usage);
     }
 
+    getCount() {
+        return this.count;
+    }
+
     bind() {
-        this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, this._rendererID);
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.rendererID);
     }
 
     unbind() {
-        this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, 0);
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
     }
 }

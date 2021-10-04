@@ -29,7 +29,7 @@ export class Shader {
     }
 
     unbind() {
-        this._gl.useProgram(0);
+        this._gl.useProgram(null);
     }
 
     uploadInt(name, value) {
