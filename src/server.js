@@ -8,7 +8,7 @@ const app = express();
 nunjucks.configure('src/views', { autoescape: true , express: app});
 
 app.set('view engine', 'html');
-app.set('port', 3001);
+app.set('port', process.env.port || 3000);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
