@@ -1,12 +1,6 @@
-
-// Create Entity
-// Add MeshRendererComponent To Entity
-// MeshRendererComponent needs a mesh and a material
-// Mesh contains VBO, EBO, material contains Shader
-// We need a vertex array
-
 import {VertexArray} from "../../rendering/vertexarray.js"
 import {System} from "./system.js";
+import {Component} from "../components/component.js";
 
 export class RenderSystem extends System {
 
@@ -27,8 +21,8 @@ export class RenderSystem extends System {
 
             const entity = this.entities[entityID];
 
-            const meshRendererComponent = entity.getComponent("MeshRenderer");
-            const transformComponent = entity.getComponent("Transform");
+            const meshRendererComponent = entity.getComponent(Component.MeshRenderer);
+            const transformComponent = entity.getComponent(Component.Transform);
 
             this.vertexArray.bind();
             this.vertexArray.setIndexBuffer(meshRendererComponent.getMesh().getIndexBuffer());

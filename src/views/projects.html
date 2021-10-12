@@ -3,15 +3,64 @@
 {% extends 'layout.html' %}
 
 {% block style %}
-<link type="text/css" rel="stylesheet" href="/css/home.css">
+<link type="text/css" rel="stylesheet" href="/css/projects.css">
 {% endblock %}
 
 
 {% block content %}
-<div class="list-group">
-    <a href="/projects/pathfinder/" class="list-group-item list-group-item-action">Pathfinder</a>
-    <a href="/projects/2D_engine/" class="list-group-item list-group-item-action">2D Engine</a>
-    <a href="#" class="list-group-item list-group-item-action">TBD</a>
-    <a href="#" class="list-group-item list-group-item-action disabled">TBD</a>
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner project-carousel-inner">
+        <div class="carousel-item active project-carousel-item">
+            <img class="carousel-picture" src='/images/a-star.png' alt="A* Pathfinding">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">A* Pathfinder</h5>
+                    <p class="card-text">A quick write-up and interactive display of the A* pathfinding algorithm.</p>
+                    <a href="/projects/pathfinder/" class="btn btn-dark">Pathfinder</a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item project-carousel-item">
+            <img class="carousel-picture" src='/images/engine-pic.png' alt="2D WebGL Engine">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">2D Engine</h5>
+                    <p class="card-text">A work-in-progress WebGL game engine.</p>
+                    <a href="/projects/2D_engine/" class="btn btn-dark">WebGL Sandbox/Engine</a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item project-carousel-item">
+            <img class="carousel-picture" src='/images/dark-souls-site.png' alt="Boss Tracker Wep App">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Dark Souls Boss-Tracker</h5>
+                    <p class="card-text">A fun little site thrown together for a friend.  Allows users to track progress through a Dark Souls III play-through.</p>
+                    <a href="https://boss-tracker.herokuapp.com/home" class="btn btn-dark">Boss-Tracker</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="carousel-item project-carousel-item">
+            <img class="carousel-picture" src='/images/cgproject-pic.png' alt="CG Projects">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Computer Graphics Projects</h5>
+                    <p class="card-text">Some OpenGL projects done for CG classes and for fun.</p>
+                    <a href="/projects/cg_projects/" class="btn btn-dark">CG Stuff</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
 </div>
 {% endblock content %}

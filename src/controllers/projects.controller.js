@@ -7,5 +7,9 @@ exports.get_pathfinder_page = (req, res) => {
 }
 
 exports.get_2D_engine_page = (req, res) => {
-    return res.render('2D_engine.html')
+    return res.render('2D_engine.html');
+}
+
+exports.get_cg_projects_page = (req, res) => {
+    return res.render('cg_projects.html');
 }

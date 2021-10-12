@@ -2,6 +2,7 @@
 import {TransformComponent} from "./components/transformComponent.js"
 import {TagComponent} from "./components/tagComponent.js"
 import {Vector3} from "../math/math.js";
+import {Component} from "./components/component.js";
 
 
 export class SystemManager {
@@ -70,12 +71,16 @@ export class EntityManager {
 
         this.entities[this.entityID++] = entity;
 
-        const tagComponent = new TagComponent(name | "Entity");
-        entity.addComponent("Tag", tagComponent);
+        const tagComponent = new TagComponent({tag: name || "Entity"});
+        entity.addComponent(Component.Tag, tagComponent);
         const transformComponent = new TransformComponent(defaultTransformProperties);
-        entity.addComponent("Transform", transformComponent)
+        entity.addComponent(Component.Transform, transformComponent)
 
         return entity;
+    }
+
+    getEntity(id) {
+        return this.entities[id];
     }
 
     removeEntity(id) {
@@ -121,6 +126,10 @@ export class Entity {
         }
     }
 
+    getComponents() {
+        return this.components;
+    }
+
     getComponent(componentName) {
         return this.hasComponent(componentName) ? this.components[componentName] : null;
     }
@@ -136,11 +145,19 @@ export class World {
         this.entityManager = new EntityManager(this);
         this.systemManager = new SystemManager(this);
 
-        this.lastFrameTime = new Date().getTime();
+        this.onCreateEntityCallSubscribers = [];
+    }
+
+    getEntity(entityID) {
+        return this.entityManager.getEntity(entityID);
     }
 
     createEntity(name) {
-        return this.entityManager.createEntity(name);
+
+        const entity = this.entityManager.createEntity(name);
+
+        this.onCreateEntityCallSubscribers.forEach(t => t(entity));
+        return entity;
     }
 
     removeEntity(id) {
@@ -164,11 +181,7 @@ export class World {
         this.systemManager.removeSystem(systemName);
     }
 
-    execute() {
-        const time = new Date().getTime();
-        const dt = (time - this.lastFrameTime) / 1000.0;
-        this.lastFrameTime = time;
-
+    execute(dt) {
         this.systemManager.execute(dt);
     }
 }

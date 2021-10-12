@@ -1,9 +1,9 @@
 import {Shader} from './rendering/shader.js';
-import {VertexArray} from "./rendering/vertexarray.js";
 import {Camera} from "./rendering/camera.js"
 import {Input} from "./core/input.js"
 import {Mesh} from "./rendering/mesh.js"
 import {Material} from "./rendering/material.js"
+import {UIManager} from "./ui/uiManager.js"
 
 import {World} from "./ecs/entity.js"
 import {RenderSystem} from "./ecs/systems/meshRendererSystem.js"
@@ -54,7 +54,11 @@ class Application {
         );
         const triangleIndices = new Uint32Array([0, 2, 1]);
 
+        this.uiManager = new UIManager(this);
+
+
         this.world = new World();
+        this.world.onCreateEntityCallSubscribers.push(this.uiManager.onEntityCreated.bind(this.uiManager));
 
         this.world.registerSystem("MeshRenderer",
             new RenderSystem(
@@ -79,7 +83,6 @@ class Application {
     }
 
     run() {
-
         requestAnimationFrame(() => {
 
             const time = new Date().getTime();

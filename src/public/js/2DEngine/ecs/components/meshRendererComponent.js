@@ -1,11 +1,34 @@
 
-
+import {TypePropertyDrawer} from "../../ui/typePropertyDrawer.js";
 import {Component} from "./component.js"
 
 export class MeshRendererComponent extends Component {
 
     constructor(properties) {
         super(properties);
+    }
+
+    drawComponent(parentElement) {
+
+        const meshRendererParent = document.createElement("div");
+
+        if(this.properties.hasOwnProperty("uniforms")) {
+
+            for(const uniform in this.properties["uniforms"]) {
+
+                if(!this.properties["uniforms"].hasOwnProperty(uniform)) continue;
+
+                switch(uniform.getType()) {
+                    case "Float": {
+                        const floatDrawerParent = TypePropertyDrawer.createFloatDrawer(uniform.getName(), uniform.getValue());
+                        meshRendererParent.appendChild(floatDrawerParent);
+                        break;
+                    }
+                }
+            }
+        }
+
+        parentElement.appendChild(meshRendererParent);
     }
 
     getMesh() {

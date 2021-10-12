@@ -1,0 +1,52 @@
+{% set title = 'CG Projects' %}
+
+{% extends 'layout.html' %}
+
+{% block style %}
+<link href="/css/home.css" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1 class="display-4">Animate a Helicopter!</h1>
+    <p class="lead">The project is simple: Animate a Helicopter!  Simple is boring!</p>
+    <hr class="my-4">
+    <img src="/gifs/cinema-view.gif" class="img-fluid" alt="Hm... Something went wrong.">
+    <br><br>
+    <p>The project's description was to upload some numbers defining the vertices of the above helicopter to the GPU, throw in some more numbers defining the vertices of the
+        helicopter's blades, then to apply a few transformations to situate the blades in their appropriate positions, then make em' spin!
+    I thought it would be more fun to a create a scene "First Contact" type of situation.
+
+        <br><br>
+        As the course is designed for CG newcomers, we're using GLUT (OpenGL Utility ToolKit) and GLU (OpenGL Utility Library).  Both are
+        considered deprecated tools at this point, but some legacy libraries require them.  The GLU specification was last updated in 1998 and with the release of OpenGL 3.1 in 2009,
+        a number of functions have been deprecated.  Fortunately for us, the stuff we'll need is happily usable.
+        <br><br>
+        The GL code for uploading the data required to draw our extraterrestrial friend and their saucer to the GPU is shown below:</p>
+
+    <pre><code>
+        Core::Geometry* saucer = Core::Geometry::Create(Core::PrimitiveType::Sphere);
+
+	TestSaucerList = glGenLists(1);
+
+	glNewList(TestSaucerList, GL_COMPILE);
+	glBegin(GL_TRIANGLES);
+	for (uint32_t index : saucer->GetIndices())
+	{
+		const Core::Vertex vertex = saucer->GetVertices()[index];
+		glVertex3f(vertex.Position.x, vertex.Position.y, vertex.Position.z);
+		glNormal3f(vertex.Normal.x, vertex.Normal.y, vertex.Normal.z);
+	}
+	glEnd();
+	glEndList();
+    </code></pre>
+
+</div>
+{% endblock %}
+
+
+
+{% block script %}
+{% endblock %}

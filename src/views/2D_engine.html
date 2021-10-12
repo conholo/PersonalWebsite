@@ -4,7 +4,6 @@
 
 {% block style %}
 <link href="/css/2D_engine.css" rel="stylesheet">
-
 <script  id="vertex-shader-2d" type="x-shader/x-vertex">#version 300 es
 precision mediump float;
 layout(location = 0) in vec3 a_Position;
@@ -34,9 +33,40 @@ void main()
 {% endblock %}
 
 
-{% block content %}
-<canvas id="glCanvas" width="800" height="800"></canvas>
-{% endblock content %}
+{% block blank %}
+<div class="viewport-container noselect" id="main-editor-container" oncontextmenu="return false">
+    <div id="left-tab">
+        <div id="asset-tab">
+            <h2 id="asset-tab-title" class="editor-panel-title"> Asset Tab </h2>
+        </div>
+        <div id="stats-tab">
+            <h2 id="stats-tab-title" class="editor-panel-title"> Stats </h2>
+        </div>
+    </div>
+    <canvas id="glCanvas" width="800" height="800"></canvas>
+    <div id="right-tab">
+        <div id="scene-hierarchy">
+            <div id="scene-hierarchy-title-container">
+                <h2 id="scene-hierarchy-title" class="editor-panel-title"> Scene Hierarchy </h2>
+                <div class="btn-dark" id="scene-hierarchy-properties-btn">...</div>
+            </div>
+            <div id="scene-hierarchy-entity-container">
+                <div class="noselect list-group" id="scene-hierarchy-entities"></div>
+            </div>
+        </div>
+        <div id="properties-inspector">
+            <h2 id="properties-inspector-title" class="editor-panel-title"> Inspector </h2>
+            <div id="properties-inspector-components"> </div>
+        </div>
+    </div>
+</div>
+
+<div id="scene-hierarchy-context-popup" class="dropdown-menu noselect">
+    <h6 class="dropdown-header">Context Menu</h6>
+</div>
+
+{% endblock %}
+
 
 
 {% block script %}

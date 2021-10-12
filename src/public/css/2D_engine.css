@@ -1,8 +1,121 @@
+body {
+    width: 100%;
+    height: 100%;
+    background-color: #393939;
+}
+
+.viewport-container {
+    border: 2px solid #ffffff;
+    display: flex;
+    align-items: flex-start;
+    background-color: black;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+#scene-hierarchy-context-popup{
+    position: absolute;
+    background-color: white;
+}
+
+
+.editor-panel-title {
+    text-align: center;
+}
+
+#left-tab {
+    color: white;
+    min-width: 300px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+}
+
+#asset-tab {
+    height: 50%;
+    background-color: dimgrey;
+    border: 2px solid #ffffff;
+}
+
+#stats-tab{
+    height: 50%;
+    background-color: dimgrey;
+    border: 2px solid #ffffff;
+}
+
+#right-tab {
+    color: white;
+    min-width: 300px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+}
+
+#scene-hierarchy-title-container {
+    text-align: center;
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: 2px solid #000000;
+}
+
+#scene-hierarchy-properties-btn {
+    margin: 2px;
+    align-self: center;
+    min-width: 10%;
+    height: 30%;
+}
+
+#scene-hierarchy {
+    height: 50%;
+    background-color: dimgrey;
+    border: 2px solid #ffffff;
+}
+
+#scene-hierarchy-entity-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+}
+
+.list-group-item {
+    border: 1px solid black;
+    align-content: center;
+}
+
+
+#properties-inspector {
+    height: 50%;
+    background-color: dimgrey;
+    border: 2px solid #ffffff;
+}
+
+
 canvas {
     border: 2px solid black;
     background-color: black;
 }
 
-video {
-    display: none;
-}
+
+/*
+    centered
+
+    border: 2px solid black;
+    background-color: black;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+ */
