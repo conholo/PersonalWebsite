@@ -8,3 +8,27 @@ html, body{
     grid-column-gap: 100px;
     grid-row-gap: 100px;
 }
+
+#cg-compute-texture-parent-grid {
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 500px 500px;
+    grid-row: auto;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+}
+
+
+#cg-particles-parent-sub-grid{
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 500px 500px;
+    grid-row: auto;
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+}
+
+
+#cg-particles-parent-sub-grid img:first-child {
+    grid-area: 1 / 1 / span 2 / span 2;
+}
